@@ -137,10 +137,12 @@ function sizeToImage(){
   cv.width = W; cv.height = H;
   cv.style.width = r.width+"px";
   cv.style.height = r.height+"px";
-  cv.style.left = r.left + "px";
-  cv.style.top  = r.top  + "px";
-  const bx = r.left + r.width * WINDOW_NORM.x;
-  const by = r.top  + r.height* WINDOW_NORM.y;
+  const wr0 = document.getElementById('wrap').getBoundingClientRect();
+  const ox = r.left - wr0.left, oy = r.top - wr0.top;   // offset inside #wrap
+  cv.style.left = ox + "px";
+  cv.style.top  = oy + "px";
+  const bx = ox + r.width * WINDOW_NORM.x;
+  const by = oy + r.height* WINDOW_NORM.y;
   const bw = r.width * WINDOW_NORM.w;
   const bh = r.height* WINDOW_NORM.h;
   dbg.style.left = bx+"px";
@@ -149,6 +151,8 @@ function sizeToImage(){
   dbg.style.height= bh+"px";
 }
 addEventListener("resize", sizeToImage);
+if(window.visualViewport) visualViewport.addEventListener("resize", sizeToImage);
+if(window.ResizeObserver) new ResizeObserver(()=>sizeToImage()).observe(document.getElementById("wrap"));
 addEventListener("orientationchange", ()=>setTimeout(sizeToImage,300));
 
 const vsrc = `
